@@ -1,62 +1,40 @@
-const domHelper = (function () {
+const messages = (function () {
+  'use strict'
+
+  const NOTIFICATIONS_BOX_ID = 'notifications'
+  const MESSAGE_ELEM_CLASS = 'messages__notification-item'
+  const notificationsBoxElem = document.getElementById(NOTIFICATIONS_BOX_ID)
+
   return {
-    addClass (elem, className) {
-      if (elem.classList) {
-        elem.classList.add(className)
-      } else {
-        elem.className += ' ' + className
-      }
-    },
-    removeClass (elem, className) {
-      if (elem.classList) {
-        elem.classList.remove(className)
-      } else {
-        elem.className = elem.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ')
-      }
-    },
-    hasClass (elem, className) {
-      if (elem.classList) {
-        return elem.classList.contains(className)
-      } else {
-        return new RegExp('(^| )' + className + '( |$)', 'gi').test(elem.className)
-      }
-    },
-    toggleClass (elem, className) {
-      const method = (this.hasClass(elem, className)) ? this.removeClass : this.addClass
-      method(elem, className)
+    showMessage(message, typeClass = '-error', timeout = 3000) {
+      notificationsBoxElem.innerHTML = `<div class="${MESSAGE_ELEM_CLASS} ${typeClass}">${message}</div>`
+      setTimeout(() => {
+        notificationsBoxElem.innerHTML = ''
+      }, timeout)
     }
   }
 }())
 
-const list = (function (domHelper) {
+const list = (function () {
   'use strict'
 
   const LIST_ID = 'repos_list'
-  const DEFAULT_ITEM_ID = 'default_list_item'
-
   const listElem = document.getElementById(LIST_ID)
-  const defaultListItemElem = document.getElementById(DEFAULT_ITEM_ID)
-  const itemClass = 'repos__list-item'
-  const hiddenItemClass = '-hidden'
-
-  function toggleElemDisplay (elem) {
-    domHelper.toggleClass(elem, hiddenItemClass)
-  }
+  const ITEM_CLASS = 'repos__list-item'
 
   function createNewItem (text) {
-    return `<li class="${itemClass}">${text}</li>`
+    return `<li class="${ITEM_CLASS}">${text}</li>`
   }
 
   return {
     displayData (data) {
-      console.info(data.map(v => createNewItem(v.name)))
-      listElem.innerHTML = data.map(v => createNewItem(v.name))
+      if (!data) throw new Error('displayData: No data')
+      if (data.length > 0) listElem.innerHTML = data.reduce((c, v) => c += createNewItem(v.name), '')
     }
   }
+}())
 
-}(domHelper))
-
-const search = (function () {
+const search = (function (messages) {
   'use strict'
 
   const getRequestUrl = (userName) => `https://api.github.com/users/${userName}/repos`
@@ -77,17 +55,9 @@ const search = (function () {
         .catch(error => this.showRequestError(error))
     },
     showRequestError (error) {
-      throw new Error('Request error')
+      messages.showMessage('Response error')
+      throw new Error(error)
     }
-  }
-
-
-  function prepareData () {
-
-  }
-
-  function showMessage (msg) {
-
   }
 
   return {
@@ -97,9 +67,9 @@ const search = (function () {
       return _p.getUserRepos(username)
     }
   }
-}())
+}(messages))
 
-const main = (function (search, list) {
+const main = (function (search, list, messages) {
   'use strict'
 
   const FORM_ID = 'search_form'
@@ -117,8 +87,11 @@ const main = (function (search, list) {
   })
 
   function showData (data) {
-    // TODO (S.Panfilov)
+    console.info(data)
+    if (!data) throw new Error('showData: No data')
+    if (data.length === 0) messages.showMessage('User have no repos', '-info')
     list.displayData(data)
+    messages.showMessage('Success!', '-success')
   }
 
-}(search, list))
+}(search, list, messages))
