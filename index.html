@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GoEuro test</title>
+</head>
+<body>
+
+<style>
+  .search {
+    color: #636262;
+    width: 300px;
+  }
+
+  .search .search__btn {
+    display: block;
+    margin: 5px;
+    padding: 5px 10px;
+    font-size: 14px;
+    border-radius: 3px;
+    background-color: transparent;
+    border: 1px solid #636262;
+  }
+
+  .search .search__btn.-broad {
+    width: 100%;
+  }
+
+  .repos {
+    width: 300px;
+  }
+
+  .repos .repos__list-item {
+
+  }
+
+  .repos .repos__list-item.-hidden {
+    display: none;
+  }
+</style>
+
+<section class="search">
+  <form id="search_form" name="search_form" class="search__form">
+    <label class="search__input-block">
+      <span class="search__label-txt">https://github.com/</span>
+      <input id="username" type="search" placeholder="Username" name="username" value="se-panfilov" required
+             class="search__input"/>
+      <span class="search__label-txt">/</span>
+    </label>
+    <button type="submit" class="search__btn -broad">OK</button>
+  </form>
+</section>
+
+<section class="repos">
+  <ul id="repos_list" class="repos__list">
+    <li id="default_list_item" class="repos__list-item">No data</li>
+  </ul>
+</section>
+
+</body>
+
+<script src="./src/index.js"></script>
+
+</html>

@@ -29,6 +29,9 @@ npm test
 
 ### test description
 
+Build a simple client-side app that lists GitHub repositories for a given user.
+
+Use the GitHub API documented here: https://developer.github.com/v3/ (sample request:https://api.github.com/users/goeuro/repos).
 
 
 [1]: https://nodejs.org/en/
