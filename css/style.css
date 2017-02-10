@@ -22,29 +22,36 @@ body {
   padding: 5px 10px;
   font-size: 1.2em;
   border-radius: 3px;
-  background-color: transparent;
+  background-color: #7AC13E;
   border: 1px solid transparent;
   text-transform: uppercase;
   outline: none;
-  color: #353434;
+  color: white;
   cursor: pointer;
   transition: 0.5s ease background-color;
 }
 
+.search .search__input-block {
+  display: block;
+}
+
 .search .search__btn:hover, .search .search__btn:active {
-  background-color: #f9f9f9;
-  color: #1f1e1e;
+  background-color: #82cd42;
 }
 
 .search .search__label-txt {
   font-size: 1.2em;
+}
+.search .search__label-txt.-small {
+  font-size: 0.8em;
+  font-style: italic;
 }
 
 .search .search__input {
   font-size: 1.2em;
   border: 1px solid transparent;
   border-bottom: 1px solid #636262;
-  color: #434242;
+  color: #3ec144;
   max-width: 150px;
   font-style: italic;
 }
