@@ -6,7 +6,7 @@ const messages = (function () {
   const notificationsBoxElem = document.getElementById(NOTIFICATIONS_BOX_ID)
 
   return {
-    showMessage(message, typeClass = '-error', timeout = 3000) {
+    showMessage (message, typeClass = '-error', timeout = 3000) {
       notificationsBoxElem.innerHTML = `<div class="${MESSAGE_ELEM_CLASS} ${typeClass}">${message}</div>`
       setTimeout(() => {
         notificationsBoxElem.innerHTML = ''
@@ -29,7 +29,9 @@ const list = (function () {
   return {
     displayData (data) {
       if (!data) throw new Error('displayData: No data')
-      if (data.length > 0) listElem.innerHTML = data.reduce((c, v) => c += createNewItem(v.name), '')
+      if (data.length > 0) listElem.innerHTML = data.reduce((c, v) => {
+        c += createNewItem(v.name)
+      }, '')
     }
   }
 }())
@@ -58,6 +60,7 @@ const search = (function (messages) {
     },
     makeRequest (url) {
       const options = this.getOptions()
+      // eslint-disable-next-line no-undef
       return fetch(url, options)
         .then(this.handleErrors)
         .then(response => response.json())
@@ -78,6 +81,7 @@ const search = (function (messages) {
   }
 }(messages))
 
+// eslint-disable-next-line no-unused-vars
 const main = (function (search, list, messages) {
   'use strict'
 
@@ -101,5 +105,4 @@ const main = (function (search, list, messages) {
     list.displayData(data)
     messages.showMessage('Success!', '-success')
   }
-
 }(search, list, messages))
