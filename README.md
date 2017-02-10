@@ -1,5 +1,7 @@
 # goeuro_test
 
+Online demo: https://se-panfilov.github.io/goeuro_test/
+
 # Getting started
 
 ## Requirements
