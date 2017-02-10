@@ -48,8 +48,17 @@ const search = (function (messages) {
       if (!response.ok) throw new Error(response.statusText)
       return response
     },
+    getOptions () {
+      const mode = document.getElementById('is_cors').checked
+      console.info(mode)
+      return {
+        method: 'GET',
+        mode: mode ? 'cors' : 'no-cors'
+      }
+    },
     makeRequest (url) {
-      return fetch(url)
+      const options = this.getOptions()
+      return fetch(url, options)
         .then(this.handleErrors)
         .then(response => response.json())
         .catch(error => this.showRequestError(error))
