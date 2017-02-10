@@ -1,0 +1,62 @@
+.search {
+  color: #636262;
+  width: 300px;
+}
+
+.search .search__btn {
+  display: block;
+  margin: 5px;
+  padding: 5px 10px;
+  font-size: 14px;
+  border-radius: 3px;
+  background-color: transparent;
+  border: 1px solid #636262;
+}
+
+.search .search__btn.-broad {
+  width: 100%;
+}
+
+.repos {
+  width: 300px;
+}
+
+.repos .repos__list-item {
+
+}
+
+.messages {
+  display: block;
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 300px;
+  width: 300px;
+}
+
+.messages .messages__notifications {
+
+}
+
+.messages .messages__notification-item{
+  padding:15px;
+  margin: 5px;
+  font-size: 14px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+}
+
+.messages .messages__notification-item.-error{
+  color: white;
+  background-color: #D5122B;
+}
+
+.messages .messages__notification-item.-info{
+  color: white;
+  background-color: #4196E1;
+}
+
+.messages .messages__notification-item.-success{
+  color: white;
+  background-color: #7AC13E;
+}

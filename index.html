@@ -2,99 +2,42 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <link rel="stylesheet" href="css/style.css">
   <title>GoEuro test</title>
 </head>
 <body>
 
-<style>
-  .search {
-    color: #636262;
-    width: 300px;
-  }
+<div class="container">
+  <section class="search">
+    <form id="search_form" name="search_form" class="search__form">
+      <label class="search__input-block">
+        <span class="search__label-txt">https://github.com/</span>
+        <input id="username"
+               type="search"
+               placeholder="Username"
+               name="username"
+               value="se-panfilov"
+               required
+               class="search__input"/>
+        <span class="search__label-txt">/</span>
+      </label>
+      <button type="submit" class="search__btn -broad">OK</button>
+    </form>
+  </section>
 
-  .search .search__btn {
-    display: block;
-    margin: 5px;
-    padding: 5px 10px;
-    font-size: 14px;
-    border-radius: 3px;
-    background-color: transparent;
-    border: 1px solid #636262;
-  }
+  <section class="repos">
+    <ul id="repos_list" class="repos__list">
+      <li class="repos__list-item">No data</li>
+    </ul>
+  </section>
 
-  .search .search__btn.-broad {
-    width: 100%;
-  }
-
-  .repos {
-    width: 300px;
-  }
-
-  .repos .repos__list-item {
-
-  }
-
-  .messages {
-    display: block;
-    position: fixed;
-    right: 0;
-    top: 0;
-    height: 300px;
-    width: 300px;
-  }
-
-  .messages .messages__notifications {
-
-  }
-
-  .messages .messages__notification-item{
-    padding:15px;
-    margin: 5px;
-    font-size: 14px;
-    border: 1px solid transparent;
-    border-radius: 3px;
-  }
-
-  .messages .messages__notification-item.-error{
-    color: white;
-    background-color: #D5122B;
-  }
-
-  .messages .messages__notification-item.-info{
-    color: white;
-    background-color: #4196E1;
-  }
-
-  .messages .messages__notification-item.-success{
-    color: white;
-    background-color: #7AC13E;
-  }
-</style>
-
-<section class="search">
-  <form id="search_form" name="search_form" class="search__form">
-    <label class="search__input-block">
-      <span class="search__label-txt">https://github.com/</span>
-      <input id="username" type="search" placeholder="Username" name="username" value="se-panfilov" required
-             class="search__input"/>
-      <span class="search__label-txt">/</span>
-    </label>
-    <button type="submit" class="search__btn -broad">OK</button>
-  </form>
-</section>
-
-<section class="repos">
-  <ul id="repos_list" class="repos__list">
-    <li class="repos__list-item">No data</li>
-  </ul>
-</section>
-
-<section class="messages">
-  <div id="notifications" class="messages__notifications"></div>
-</section>
+  <section class="messages">
+    <div id="notifications" class="messages__notifications"></div>
+  </section>
+</div>
 
 </body>
 
-<script src="./src/index.js"></script>
+<script src="./js/index.js"></script>
 
 </html>

@@ -55,7 +55,7 @@ const search = (function (messages) {
         .catch(error => this.showRequestError(error))
     },
     showRequestError (error) {
-      messages.showMessage('Response error')
+      messages.showMessage('Request error')
       throw new Error(error)
     }
   }
@@ -87,7 +87,6 @@ const main = (function (search, list, messages) {
   })
 
   function showData (data) {
-    console.info(data)
     if (!data) throw new Error('showData: No data')
     if (data.length === 0) messages.showMessage('User have no repos', '-info')
     list.displayData(data)
