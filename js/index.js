@@ -106,3 +106,11 @@ const main = (function (search, list, messages) {
     messages.showMessage('Success!', '-success')
   }
 }(search, list, messages))
+
+
+module.exports = {
+  main,
+  search,
+  messages,
+  list
+}
