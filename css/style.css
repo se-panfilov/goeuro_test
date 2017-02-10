@@ -1,16 +1,52 @@
+body {
+  font-size: 16px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.row {
+  display: flex;
+}
+
+.row.-centered {
+  justify-content: center;
+}
+
 .search {
   color: #636262;
-  width: 300px;
+  margin-top: 200px;
 }
 
 .search .search__btn {
   display: block;
   margin: 5px;
   padding: 5px 10px;
-  font-size: 14px;
+  font-size: 1.2em;
   border-radius: 3px;
   background-color: transparent;
-  border: 1px solid #636262;
+  border: 1px solid transparent;
+  text-transform: uppercase;
+  outline: none;
+  color: #353434;
+  cursor: pointer;
+  transition: 0.5s ease background-color;
+}
+
+.search .search__btn:hover, .search .search__btn:active {
+  background-color: #f9f9f9;
+  color: #1f1e1e;
+}
+
+.search .search__label-txt {
+  font-size: 1.2em;
+}
+
+.search .search__input {
+  font-size: 1.2em;
+  border: 1px solid transparent;
+  border-bottom: 1px solid #636262;
+  color: #434242;
+  max-width: 150px;
+  font-style: italic;
 }
 
 .search .search__btn.-broad {
@@ -18,11 +54,13 @@
 }
 
 .repos {
-  width: 300px;
+  display: flex;
+  justify-content: center;
 }
 
 .repos .repos__list-item {
-
+  padding: 3px;
+  font-size: 0.8em;
 }
 
 .messages {
@@ -30,33 +68,33 @@
   position: fixed;
   right: 0;
   top: 0;
-  height: 300px;
-  width: 300px;
+  left: 0;
+  height: 80px;
 }
 
 .messages .messages__notifications {
 
 }
 
-.messages .messages__notification-item{
-  padding:15px;
+.messages .messages__notification-item {
+  padding: 15px;
   margin: 5px;
-  font-size: 14px;
+  font-size: 0.8em;
   border: 1px solid transparent;
   border-radius: 3px;
 }
 
-.messages .messages__notification-item.-error{
+.messages .messages__notification-item.-error {
   color: white;
   background-color: #D5122B;
 }
 
-.messages .messages__notification-item.-info{
+.messages .messages__notification-item.-info {
   color: white;
   background-color: #4196E1;
 }
 
-.messages .messages__notification-item.-success{
+.messages .messages__notification-item.-success {
   color: white;
   background-color: #7AC13E;
 }

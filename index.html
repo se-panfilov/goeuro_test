@@ -2,33 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <title>GoEuro test</title>
 </head>
 <body>
 
 <div class="container">
-  <section class="search">
-    <form id="search_form" name="search_form" class="search__form">
-      <label class="search__input-block">
-        <span class="search__label-txt">https://github.com/</span>
-        <input id="username"
-               type="search"
-               placeholder="Username"
-               name="username"
-               value="se-panfilov"
-               required
-               class="search__input"/>
-        <span class="search__label-txt">/</span>
-      </label>
-      <button type="submit" class="search__btn -broad">OK</button>
-    </form>
-  </section>
+  <div class="row -centered">
+    <section class="search">
+      <form id="search_form" name="search_form" class="search__form">
+        <label class="search__input-block">
+          <span class="search__label-txt">https://github.com/</span>
+          <input id="username"
+                 class="search__input"
+                 type="search"
+                 placeholder="Username"
+                 name="username"
+                 value="se-panfilov"
+                 required/>
+          <span class="search__label-txt">/</span>
+        </label>
+        <button type="submit" class="search__btn -broad">Go!</button>
+      </form>
+    </section>
+  </div>
 
   <section class="repos">
-    <ul id="repos_list" class="repos__list">
-      <li class="repos__list-item">No data</li>
-    </ul>
+    <ul id="repos_list" class="repos__list"></ul>
   </section>
 
   <section class="messages">
