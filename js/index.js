@@ -72,15 +72,18 @@ const search = (function (messages) {
     makeRequest (url) {
       const options = this.getOptions()
 
-      return fetch(url).then(response => {
-        let json = response.json()
-        if (response.ok) return json
+      return fetch(url, options).then(response => {
+        if (!response.ok) {
+          if (response.status === STATUS.notFound) {
+            _p.showRequestError('User not found')
+          } else {
+            const msg = (response.statusText && response.statusText.length > 0) ? response.statusText : 'Error occured'
+            _p.showRequestError(msg)
+          }
+          throw new Error(response.statusText)
+        }
 
-        if (response.status === STATUS.notFound) _p.showRequestError('User not found')
-
-        return json.then(err => {
-          throw new Error(err)
-        })
+        return response.json()
       })
     },
     showRequestError (message) {
