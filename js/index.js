@@ -7,7 +7,7 @@ const messages = (function () {
 
   return {
     showMessage (message, typeClass = '-error', timeout = 3000) {
-      notificationsBoxElem.innerHTML = `<div class="${MESSAGE_ELEM_CLASS} ${typeClass}">${message}</div>`
+      notificationsBoxElem.innerHTML = `<div class="${MESSAGE_ELEM_CLASS} ${typeClass}">${message || ''}</div>`
       setTimeout(() => {
         notificationsBoxElem.innerHTML = ''
       }, timeout)
