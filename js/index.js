@@ -27,10 +27,14 @@ const list = (function () {
   }
 
   return {
+    clearData () {
+      listElem.innerHTML = ''
+    },
     displayData (data) {
       if (!data) throw new Error('displayData: No data')
       if (data.length > 0) listElem.innerHTML = data.reduce((c, v) => {
         c += createNewItem(v.name)
+        return c
       }, '')
     }
   }
@@ -41,18 +45,25 @@ const search = (function (messages) {
 
   const getRequestUrl = (userName) => `https://api.github.com/users/${userName}/repos`
 
+  const STATUS = {
+    notFound: 404
+  }
+
   const _p = {
     getUserRepos (userName) {
       const url = getRequestUrl(userName)
       return this.makeRequest(url)
     },
-    handleErrors (response) {
-      if (!response.ok) throw new Error(response.statusText)
-      return response
+    handleResponse (response) {
+      if (response.ok)  return response
+
+      if (response.status === STATUS.notFound) _p.showRequestError('User not found')
+
+      _p.showRequestError('User not found')
+      throw new Error(response.statusText)
     },
     getOptions () {
       const mode = document.getElementById('is_cors').checked
-      console.info(mode)
       return {
         method: 'GET',
         mode: mode ? 'cors' : 'no-cors'
@@ -60,15 +71,20 @@ const search = (function (messages) {
     },
     makeRequest (url) {
       const options = this.getOptions()
-      // eslint-disable-next-line no-undef
-      return fetch(url, options)
-        .then(this.handleErrors)
-        .then(response => response.json())
-        .catch(error => this.showRequestError(error))
+
+      return fetch(url).then(response => {
+        let json = response.json()
+        if (response.ok) return json
+
+        if (response.status === STATUS.notFound) _p.showRequestError('User not found')
+
+        return json.then(err => {
+          throw new Error(err)
+        })
+      })
     },
-    showRequestError (error) {
-      messages.showMessage('Request error')
-      throw new Error(error)
+    showRequestError (message) {
+      messages.showMessage(message)
     }
   }
 
@@ -96,6 +112,7 @@ const main = (function (search, list, messages) {
     const value = inputElem.value
     if (!value || value.length === 0) throw new Error('Username input is empty')
 
+    list.clearData()
     search.onSubmit(event, value).then(data => showData(data))
   })
 
@@ -107,10 +124,13 @@ const main = (function (search, list, messages) {
   }
 }(search, list, messages))
 
-
-module.exports = {
-  main,
-  search,
-  messages,
-  list
+//for testing purpose
+if (typeof module === 'object' && module.exports) {
+  module.exports = {
+    main,
+    search,
+    messages,
+    list
+  }
 }
+
