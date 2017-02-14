@@ -1,25 +1,48 @@
-const messages = (function () {
-  'use strict'
-
-  const NOTIFICATIONS_BOX_ID = 'notifications'
-  const MESSAGE_ELEM_CLASS = 'messages__notification-item'
-  const notificationsBoxElem = document.getElementById(NOTIFICATIONS_BOX_ID)
-
+const dom = (function () {
   return {
-    showMessage (message, typeClass = '-error', timeout = 3000) {
-      notificationsBoxElem.innerHTML = `<div class="${MESSAGE_ELEM_CLASS} ${typeClass}">${message || ''}</div>`
-      setTimeout(() => {
-        notificationsBoxElem.innerHTML = ''
-      }, timeout)
+    getElement(id){
+      if (!id) return new Error('getElement: no ID')
+      return document.getElementById(id)
+    },
+    setHTML (elem, content) {
+      if (!elem) return new Error('setHTML: no element')
+      elem.innerHTML = content
+    },
+    clearHTML (elem) {
+      this.setHTML(elem, '')
+    },
+    addEventListener (elem, event, cb) {
+      if (!elem) return new Error('addEventListener: no element')
+      elem.addEventListener(event, event => {
+        if (cb) cb(event)
+      })
     }
   }
 }())
 
-const list = (function () {
+const messages = (function (dom) {
+  'use strict'
+
+  const NOTIFICATIONS_BOX_ID = 'notifications'
+  const MESSAGE_ELEM_CLASS = 'messages__notification-item'
+  const notificationsBoxElem = dom.getElement(NOTIFICATIONS_BOX_ID)
+
+  return {
+    showMessage (message, typeClass = '-error', timeout = 3000) {
+      const msgHtml = `<div class="${MESSAGE_ELEM_CLASS} ${typeClass}">${message || ''}</div>`
+      dom.setHTML(notificationsBoxElem, msgHtml)
+      setTimeout(() => {
+        dom.clearHTML(notificationsBoxElem)
+      }, timeout)
+    }
+  }
+}(dom))
+
+const list = (function (dom) {
   'use strict'
 
   const LIST_ID = 'repos_list'
-  const listElem = document.getElementById(LIST_ID)
+  const listElem = dom.getElement(LIST_ID)
   const ITEM_CLASS = 'repos__list-item'
 
   function createNewItem (text) {
@@ -28,19 +51,22 @@ const list = (function () {
 
   return {
     clearData () {
-      listElem.innerHTML = ''
+      dom.clearHTML(listElem)
     },
     displayData (data) {
       if (!data) throw new Error('displayData: No data')
-      if (data.length > 0) listElem.innerHTML = data.reduce((c, v) => {
+      // if (data.length > 0) {
+      const itemsHtml = data.reduce((c, v) => {
         c += createNewItem(v.name)
         return c
       }, '')
+      dom.setHTML(listElem, itemsHtml)
+      // }
     }
   }
-}())
+}(dom))
 
-const search = (function (messages) {
+const search = (function (messages, dom) {
   'use strict'
 
   const getRequestUrl = (userName) => `https://api.github.com/users/${userName}/repos`
@@ -63,10 +89,13 @@ const search = (function (messages) {
       throw new Error(response.statusText)
     },
     getOptions () {
-      const mode = document.getElementById('is_cors').checked
+      const CORS_CHECKBOX_ID = 'is_cors'
+      const corsCheckbox = dom.getElement(CORS_CHECKBOX_ID)
+      const isCors = corsCheckbox.checked
+
       return {
         method: 'GET',
-        mode: mode ? 'cors' : 'no-cors'
+        mode: isCors ? 'cors' : 'no-cors'
       }
     },
     makeRequest (url) {
@@ -98,26 +127,29 @@ const search = (function (messages) {
       return _p.getUserRepos(username)
     }
   }
-}(messages))
+}(messages, dom))
 
 // eslint-disable-next-line no-unused-vars
-const main = (function (search, list, messages) {
+const main = (function (search, list, messages, dom) {
   'use strict'
 
   const FORM_ID = 'search_form'
   const INPUT_ID = 'username'
   const SUBMIT_EVENT = 'submit'
 
-  const formElem = document.getElementById(FORM_ID)
-  const inputElem = document.getElementById(INPUT_ID)
+  const formElem = dom.getElement(FORM_ID)
+  const inputElem = dom.getElement(INPUT_ID)
 
-  formElem.addEventListener(SUBMIT_EVENT, event => {
+  dom.addEventListener(formElem, SUBMIT_EVENT, onSubmit)
+
+  function onSubmit (event) {
     const value = inputElem.value
     if (!value || value.length === 0) throw new Error('Username input is empty')
 
     list.clearData()
-    search.onSubmit(event, value).then(data => showData(data))
-  })
+    // search.onSubmit(event, value).then(data => showData(data))
+    search.onSubmit(event, value).then(showData)
+  }
 
   function showData (data) {
     if (!data) throw new Error('showData: No data')
@@ -125,7 +157,7 @@ const main = (function (search, list, messages) {
     list.displayData(data)
     messages.showMessage('Success!', '-success')
   }
-}(search, list, messages))
+}(search, list, messages, dom))
 
 //for testing purpose
 if (typeof module === 'object' && module.exports) {
