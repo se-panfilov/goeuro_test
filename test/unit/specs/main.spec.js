@@ -1,18 +1,12 @@
-const fs = require('fs')
-const html = fs.readFileSync(__dirname + '/../../../index.html', 'utf8')
-const jsdom = require('jsdom-global')()
-document.write(html)
 const elements = require('../../../js/index').elements
-const main = require('../../../js/index').main
+const main= require('../../../js/index').main
 const dom = require('../../../js/index').dom
 const sinon = require('sinon')
-
 
 describe('elements:', () => {
 
   describe('init.', () => {
     it('happy path', () => {
-      const id = 'someId'
       const elementsMock = sinon.mock(elements)
       const formElemResult = {name: 'formElemResult'}
       const inputElemResult = {name: 'inputElemResult'}

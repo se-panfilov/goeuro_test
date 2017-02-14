@@ -1,14 +1,10 @@
-const fs = require('fs')
-const html = fs.readFileSync(__dirname + '/../../../index.html', 'utf8')
-const jsdom = require('jsdom-global')()
-document.write(html)
 const elements = require('../../../js/index').elements
 const messages = require('../../../js/index').messages
-const sinon = require('sinon')
-const fetchMock = require('fetch-mock')
-
 const search = require('../../../js/index').search
-import {expect} from "chai";
+
+const fetchMock = require('fetch-mock')
+const sinon = require('sinon')
+const expect = require("chai").expect
 
 describe('search:', () => {
 

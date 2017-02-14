@@ -19,15 +19,18 @@ const dom = (function () {
     setHTML (elem, content) {
       if (!elem) return new Error('setHTML: no element')
       elem.innerHTML = content
+      return elem
     },
     clearHTML (elem) {
       this.setHTML(elem, '')
+      return elem
     },
     addEventListener (elem, event, cb) {
       if (!elem) return new Error('addEventListener: no element')
       elem.addEventListener(event, event => {
         if (cb) cb(event)
       })
+      return elem
     },
     createElem (tag = 'div', className, text = '') {
       const classes = (className) ? `class="${className}` : ''

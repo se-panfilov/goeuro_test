@@ -6,8 +6,7 @@ const config = require('../../../js/index').config
 const elements = require('../../../js/index').elements
 const dom = require('../../../js/index').dom
 const sinon = require('sinon')
-
-import {expect} from "chai";
+const expect = require("chai").expect
 
 describe('elements:', () => {
 

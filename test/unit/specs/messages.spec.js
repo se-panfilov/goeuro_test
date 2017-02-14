@@ -1,66 +1,55 @@
-// const fs = require('fs')
-// const html = fs.readFileSync(__dirname + '/../../../index.html', 'utf8')
-// const jsdom = require('jsdom-global')()
-// document.write(html)
-// // global.document = {}
-// const config = require('../../../js/index').config
-// // const dom = require('../../../js/index').dom
-// // const sinon = require('sinon')
-// // const getElsStub = sinon.stub(document.body, 'getElementById')
-//
-// const messages = require('../../../js/index').messages
-// import {expect} from "chai";
-//
-// describe('messages:', () => {
-//
-//
-//   afterEach(function () {
-//     const elem = document.getElementById(config.notificationsBoxId)
-//     elem.innerHTML = ''
-//   });
-//
-//   it('can show messages', () => {
-//     const message = 'my message'
-//     const elem = document.getElementById(config.notificationsBoxId)
-//     expect(elem.textContent).to.equal('')
-//
-//     messages.showMessage(message)
-//
-//     expect(elem.textContent).to.equal(message)
-//   })
-//
-//   it('can show empty messages', () => {
-//     const message = ''
-//     const elem = document.getElementById(config.notificationsBoxId)
-//     expect(elem.textContent).to.equal('')
-//
-//     messages.showMessage(message)
-//
-//     expect(elem.textContent).to.equal(message)
-//   })
-//
-//   it('can show null messages', () => {
-//     const message = ''
-//     const elem = document.getElementById(config.notificationsBoxId)
-//     expect(elem.textContent).to.equal('')
-//
-//     messages.showMessage()
-//
-//     expect(elem.textContent).to.equal(message)
-//   })
-//
-//   it('can clear messages', () => {
-//     const message = 'my message'
-//     const elem = document.getElementById(config.notificationsBoxId)
-//     expect(elem.textContent).to.equal('')
-//
-//     messages.showMessage(message)
-//
-//     expect(elem.textContent).to.equal(message)
-//
-//     messages.clearMessage()
-//
-//     expect(elem.textContent).to.equal('')
-//   })
-//
-// })
+const config = require('../../../js/index').config
+const messages = require('../../../js/index').messages
+const dom = require('../../../js/index').dom
+const sinon = require('sinon')
+
+describe('messages:', () => {
+
+  it('can show messages', () => {
+    const expectedResult = '<div></div>'
+    const typeClass = 'typeClass'
+    const elemClasses = `${config.messageElementClass} ${typeClass}`
+    const message = 'someMessage'
+
+    const mock = sinon.mock(dom)
+
+    mock.expects('createElem')
+      .withExactArgs('div', elemClasses, message)
+      .returns(expectedResult).once()
+
+    mock.expects('setHTML')
+      .withArgs(sinon.match.any, expectedResult)
+      .once()
+
+    messages.showMessage(message, typeClass)
+
+    mock.verify()
+    mock.restore()
+  })
+
+  it('can clear messages', () => {
+    const mock = sinon.mock(dom)
+
+    mock.expects('setHTML').once()
+
+    messages.clearMessage()
+
+    mock.verify()
+    mock.restore()
+  })
+
+  it('can blink messages', () => {
+    const message = 'message'
+    const typeClass = 'typeClass'
+
+    const mock = sinon.mock(messages)
+
+    mock.expects('showMessage').withExactArgs(message, typeClass).once()
+    // mock.expects('clearMessage').once()
+
+    messages.blinkMessage(message, typeClass)
+
+    mock.verify()
+    mock.restore()
+  })
+})

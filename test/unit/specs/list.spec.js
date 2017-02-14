@@ -1,14 +1,9 @@
-const fs = require('fs')
-const html = fs.readFileSync(__dirname + '/../../../index.html', 'utf8')
-const jsdom = require('jsdom-global')()
-document.write(html)
-const config = require('../../../js/index').config
-const dom = require('../../../js/index').dom
 const sinon = require('sinon')
-// const getElsStub = sinon.stub(document.body, 'getElementById')
-
+const dom = require('../../../js/index').dom
 const list = require('../../../js/index').list
-import {expect} from "chai";
+const config = require('../../../js/index').config
+
+const expect = require("chai").expect
 
 describe('list:', () => {
 
@@ -24,12 +19,14 @@ describe('list:', () => {
       `<li class="${config.listItemClass}">${data[1].name}</li>` +
       `<li class="${config.listItemClass}">${data[2].name}</li>`
 
-    const setHtmlMock = sinon.mock(dom).expects('setHTML').withArgs(sinon.match.any, expectedHtml).once()
+    const setHtmlMock = sinon.mock(dom)
+    setHtmlMock.expects('setHTML').withArgs(sinon.match.any, expectedHtml).once()
 
     const result = list.displayData(data)
 
     expect(result).to.equal(expectedHtml)
     setHtmlMock.verify()
+    setHtmlMock.restore()
   })
 
 
@@ -39,9 +36,12 @@ describe('list:', () => {
   })
 
   it('can display data', () => {
-    const clearHtmlMock = sinon.mock(dom).expects('clearHTML').once()
+    const clearHtmlMock = sinon.mock(dom)
+    clearHtmlMock.expects('clearHTML').once()
+
     list.clearData()
     clearHtmlMock.verify()
+    clearHtmlMock.restore()
   })
 
 })
