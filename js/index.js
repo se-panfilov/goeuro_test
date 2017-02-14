@@ -44,29 +44,28 @@ const elements = (function (config, dom) {
     noId: 'ID must be specified'
   }
 
-  function getElem (id) {
-    if (!id) throw new Error(messages.noId)
-    const elem = dom.getElement(id)
-    if (!elem) throw new Error(`${messages.elemNotFound}: ${id}`)
-    return elem
-  }
-
   return {
+    _getElem (id) {
+      if (!id) throw new Error(messages.noId)
+      const elem = dom.getElement(id)
+      if (!elem) throw new Error(`${messages.elemNotFound}: ${id}`)
+      return elem
+    },
     getNotificationsBox () {
-      return getElem(config.notificationsBoxId)
+      return this._getElem(config.notificationsBoxId)
     },
     getList () {
-      return getElem(config.listId)
+      return this._getElem(config.listId)
     },
     getCorsCheckbox () {
-      return getElem(config.corsCheckboxId)
+      return this._getElem(config.corsCheckboxId)
     },
     getForm () {
-      return getElem(config.formId)
+      return this._getElem(config.formId)
     },
     getInput () {
-      return getElem(config.inputId)
-    }
+      return this._getElem(config.inputId)
+    },
   }
 }(config, dom))
 
