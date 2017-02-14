@@ -161,6 +161,8 @@ const search = (function (messages, elements) {
 
   return {
     onSubmit (event, username) {
+      if (!event) throw new Error('onSubmit: no event provided')
+      if (!username) throw new Error('onSubmit: no username provided')
       event.preventDefault()
       event.stopPropagation()
       return _p.getUserRepos(username)

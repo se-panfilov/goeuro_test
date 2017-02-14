@@ -2,12 +2,10 @@ const fs = require('fs')
 const html = fs.readFileSync(__dirname + '/../../../index.html', 'utf8')
 const jsdom = require('jsdom-global')()
 document.write(html)
-const config = require('../../../js/index').config
-const dom = require('../../../js/index').dom
 const elements = require('../../../js/index').elements
 const messages = require('../../../js/index').messages
 const sinon = require('sinon')
-// const getElsStub = sinon.stub(document.body, 'getElementById')
+const fetchMock = require('fetch-mock')
 
 const search = require('../../../js/index').search
 import {expect} from "chai";
@@ -80,7 +78,7 @@ describe('search:', () => {
       const mock = sinon.mock(messages)
       mock.expects('blinkMessage').withExactArgs('User not found').once()
 
-      const result = search._p.onError(response)
+      search._p.onError(response)
 
       mock.verify()
       mock.restore()
@@ -96,12 +94,67 @@ describe('search:', () => {
       const mock = sinon.mock(messages)
       mock.expects('blinkMessage').withExactArgs(expectedMsg).once()
 
-      // const result = search._p.onError(response)
       expect(() => search._p.onError(response)).to.throw(expectedMsg)
 
       mock.verify()
       mock.restore()
-
     })
   })
+
+  describe('makeRequest', () => {
+    it('shall make request', () => {
+      const url = 'some.some.some'
+
+      const mock = sinon.mock(search._p)
+      mock.expects('getOptions').once()
+
+      const expectedResult = {result: true}
+
+      const _fetchMock = fetchMock.get(url, expectedResult)
+      search._p.makeRequest(url)
+
+      expect(_fetchMock.called(url)).to.be.true
+
+      mock.verify()
+      _fetchMock.restore()
+      mock.restore()
+    })
+  })
+
+  describe('onSubmit', () => {
+    it('happy path', () => {
+      const event = {
+        preventDefault: function () {
+        },
+        stopPropagation: function () {
+        }
+      }
+      const username = 'username123'
+
+      const eventMock = sinon.mock(event)
+      eventMock.expects('preventDefault').once()
+      eventMock.expects('stopPropagation').once()
+
+      const mock = sinon.mock(search._p)
+      mock.expects('getUserRepos').withExactArgs(username).once()
+
+      search.onSubmit(event, username)
+
+      eventMock.verify()
+      eventMock.restore()
+      mock.verify()
+      mock.restore()
+    })
+
+    it('shall throw error when no event', () => {
+      const username = 'username123'
+      expect(() => search.onSubmit(null, username)).to.throw('onSubmit: no event provided')
+    })
+
+    it('shall throw error when no username', () => {
+      const event = {}
+      expect(() => search.onSubmit(event, null)).to.throw('onSubmit: no username provided')
+    })
+  })
+
 })
