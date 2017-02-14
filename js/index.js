@@ -1,4 +1,16 @@
+const config = {
+  notificationsBoxId: 'notifications',
+  listId: 'repos_list',
+  corsCheckboxId: 'is_cors',
+  formId: 'search_form',
+  inputId: 'username',
+  messageElementClass: 'messages__notification-item',
+  listItemClass: 'repos__list-item'
+}
+
 const dom = (function () {
+  'use strict'
+
   return {
     getElement(id){
       if (!id) return new Error('getElement: no ID')
@@ -16,38 +28,75 @@ const dom = (function () {
       elem.addEventListener(event, event => {
         if (cb) cb(event)
       })
+    },
+    createElem (tag = 'div', className, text = '') {
+      const classes = (className) ? `class="${className}` : ''
+      return `<${tag} ${classes}">${text}</${tag}>`
     }
   }
 }())
 
-const messages = (function (dom) {
+const elements = (function (config, dom) {
   'use strict'
 
-  const NOTIFICATIONS_BOX_ID = 'notifications'
-  const MESSAGE_ELEM_CLASS = 'messages__notification-item'
-  const notificationsBoxElem = dom.getElement(NOTIFICATIONS_BOX_ID)
+  const messages = {
+    elemNotFound: 'No such element',
+    noId: 'ID must be specified'
+  }
+
+  function getElem (id) {
+    if (!id) throw new Error(messages.noId)
+    const elem = dom.getElement(id)
+    if (!elem) throw new Error(`${messages.elemNotFound}: ${id}`)
+    return elem
+  }
 
   return {
-    showMessage (message, typeClass = '-error', timeout = 3000) {
-      const msgHtml = `<div class="${MESSAGE_ELEM_CLASS} ${typeClass}">${message || ''}</div>`
+    getNotificationsBox () {
+      return getElem(config.notificationsBoxId)
+    },
+    getList () {
+      return getElem(config.listId)
+    },
+    getCorsCheckbox () {
+      return getElem(config.corsCheckboxId)
+    },
+    getForm () {
+      return getElem(config.formId)
+    },
+    getInput () {
+      return getElem(config.inputId)
+    }
+  }
+}(config, dom))
+
+const messages = (function (config, dom, elements) {
+  'use strict'
+
+  const notificationsBoxElem = elements.getNotificationsBox()
+
+  return {
+    showMessage (message, typeClass = '-error') {
+      const msgHtml = dom.createElem('div', `${config.messageElementClass} ${typeClass}`, message)
       dom.setHTML(notificationsBoxElem, msgHtml)
-      setTimeout(() => {
-        dom.clearHTML(notificationsBoxElem)
+    },
+    clearMessage () {
+      dom.clearHTML(notificationsBoxElem)
+    },
+    blinkMessage (message, typeClass, timeout = 3000) {
+      this.showMessage(message, typeClass)
+
+      return setTimeout(() => {
+        this.clearMessage()
       }, timeout)
     }
   }
-}(dom))
+}(config, dom, elements))
 
-const list = (function (dom) {
+const list = (function (config, dom, elements) {
   'use strict'
 
-  const LIST_ID = 'repos_list'
-  const listElem = dom.getElement(LIST_ID)
-  const ITEM_CLASS = 'repos__list-item'
-
-  function createNewItem (text) {
-    return `<li class="${ITEM_CLASS}">${text}</li>`
-  }
+  const listElem = elements.getList()
 
   return {
     clearData () {
@@ -55,18 +104,17 @@ const list = (function (dom) {
     },
     displayData (data) {
       if (!data) throw new Error('displayData: No data')
-      // if (data.length > 0) {
+
       const itemsHtml = data.reduce((c, v) => {
-        c += createNewItem(v.name)
+        c += dom.createElem('li', config.listItemClass, v.name)
         return c
       }, '')
       dom.setHTML(listElem, itemsHtml)
-      // }
     }
   }
-}(dom))
+}(config, dom, elements))
 
-const search = (function (messages, dom) {
+const search = (function (messages, elements) {
   'use strict'
 
   const getRequestUrl = (userName) => `https://api.github.com/users/${userName}/repos`
@@ -80,17 +128,8 @@ const search = (function (messages, dom) {
       const url = getRequestUrl(userName)
       return this.makeRequest(url)
     },
-    handleResponse (response) {
-      if (response.ok)  return response
-
-      if (response.status === STATUS.notFound) _p.showRequestError('User not found')
-
-      _p.showRequestError('User not found')
-      throw new Error(response.statusText)
-    },
     getOptions () {
-      const CORS_CHECKBOX_ID = 'is_cors'
-      const corsCheckbox = dom.getElement(CORS_CHECKBOX_ID)
+      const corsCheckbox = elements.getCorsCheckbox()
       const isCors = corsCheckbox.checked
 
       return {
@@ -104,19 +143,16 @@ const search = (function (messages, dom) {
       return fetch(url, options).then(response => {
         if (!response.ok) {
           if (response.status === STATUS.notFound) {
-            _p.showRequestError('User not found')
+            messages.blinkMessage('User not found')
           } else {
             const msg = (response.statusText && response.statusText.length > 0) ? response.statusText : 'Error occured'
-            _p.showRequestError(msg)
+            messages.blinkMessage(msg)
           }
           throw new Error(response.statusText)
         }
 
         return response.json()
       })
-    },
-    showRequestError (message) {
-      messages.showMessage(message)
     }
   }
 
@@ -127,45 +163,47 @@ const search = (function (messages, dom) {
       return _p.getUserRepos(username)
     }
   }
-}(messages, dom))
+}(messages, elements))
 
 // eslint-disable-next-line no-unused-vars
-const main = (function (search, list, messages, dom) {
+const main = (function (search, list, messages, dom, elements) {
   'use strict'
 
-  const FORM_ID = 'search_form'
-  const INPUT_ID = 'username'
-  const SUBMIT_EVENT = 'submit'
-
-  const formElem = dom.getElement(FORM_ID)
-  const inputElem = dom.getElement(INPUT_ID)
-
-  dom.addEventListener(formElem, SUBMIT_EVENT, onSubmit)
-
-  function onSubmit (event) {
-    const value = inputElem.value
+  function onSubmit (event, elem) {
+    const value = elem.value
     if (!value || value.length === 0) throw new Error('Username input is empty')
 
     list.clearData()
-    // search.onSubmit(event, value).then(data => showData(data))
     search.onSubmit(event, value).then(showData)
   }
 
   function showData (data) {
     if (!data) throw new Error('showData: No data')
-    if (data.length === 0) messages.showMessage('User have no repos', '-info')
+    if (data.length === 0) messages.blinkMessage('User have no repos', '-info')
     list.displayData(data)
-    messages.showMessage('Success!', '-success')
+    messages.blinkMessage('Success!', '-success')
   }
-}(search, list, messages, dom))
+
+  return {
+    init () {
+      const formElem = elements.getForm()
+      const inputElem = elements.getInput()
+
+      dom.addEventListener(formElem, 'submit', event => onSubmit(event, inputElem))
+    }
+  }
+}(search, list, messages, dom, elements))
 
 //for testing purpose
 if (typeof module === 'object' && module.exports) {
   module.exports = {
-    main,
-    search,
+    dom,
+    config,
+    elements,
     messages,
-    list
+    list,
+    search,
+    main
   }
 }
 
