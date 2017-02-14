@@ -28,8 +28,6 @@ const list = (function () {
 
   return {
     clearData () {
-      console.info(Object.keys(document))
-      console.info(listElem.innerHTML)
       listElem.innerHTML = ''
     },
     displayData (data) {

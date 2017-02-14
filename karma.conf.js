@@ -1,6 +1,5 @@
 // Karma configuration
-// Generated on Mon Feb 13 2017 15:14:29 GMT+0800 (+08)
-require('babel-register')
+// Generated on Tue Feb 14 2017 11:38:49 GMT+0800 (+08)
 
 module.exports = function (config) {
   config.set({
@@ -11,16 +10,17 @@ module.exports = function (config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    // frameworks: ['browserify', 'mocha'],
-    frameworks: ['mocha'],
+    frameworks: ['browserify', 'mocha'],
 
 
     // list of files / patterns to load in the browser
     files: [
-      '../../index.html',
-      // '../../js/*.js',
-      '../../test/unit/specs/*.js'
+      // 'js/*.js',
+      // 'test/unit/*.js'
+      'index.html',
+      'test/unit/specs/list.test.js'
     ],
+
 
     // list of files to exclude
     exclude: [],
@@ -29,27 +29,20 @@ module.exports = function (config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      '../../js/**/*.js': ['babel'],
-      // '../../tests/**/*.spec.js': ['browserify', 'babel'],
-      '../../tests/**/*.spec.js': ['babel'],
+      // 'js/*.js': ['babel'],
+      'test/unit/specs/list.test.js': ['babel', 'browserify']
     },
 
-    babelPreprocessor: {
-      options: {
-        "presets": ["latest"]
-      }
+    browserify: {
+      debug: true,
+      transform: [ 'babelify', 'brfs' ]
     },
 
-    // browserify: {
-    //   debug: true,
-    //   transform: ['brfs'],
-    //   extensions: ['.js']
-    // },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['mocha', 'progress'],
 
 
     // web server port
@@ -62,7 +55,6 @@ module.exports = function (config) {
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    // logLevel: config.LOG_INFO,
     logLevel: config.LOG_DEBUG,
 
 
@@ -72,7 +64,8 @@ module.exports = function (config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
+    // browsers: ['PhantomJS'],
+    browsers: ['Chrome'],
 
 
     // Continuous Integration mode
