@@ -110,6 +110,7 @@ const list = (function (config, dom, elements) {
         return c
       }, '')
       dom.setHTML(listElem, itemsHtml)
+      return itemsHtml
     }
   }
 }(config, dom, elements))
