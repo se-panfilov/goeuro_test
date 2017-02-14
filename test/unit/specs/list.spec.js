@@ -38,7 +38,6 @@ describe('list:', () => {
     expect(() => list.displayData(data)).to.throw('displayData: No data')
   })
 
-
   it('can display data', () => {
     const clearHtmlMock = sinon.mock(dom).expects('clearHTML').once()
     list.clearData()

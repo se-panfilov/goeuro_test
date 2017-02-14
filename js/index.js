@@ -126,6 +126,7 @@ const search = (function (messages, elements) {
 
   const _p = {
     getUserRepos (userName) {
+      if (!userName) throw new Error('getUserRepos: no username')
       const url = getRequestUrl(userName)
       return this.makeRequest(url)
     },
@@ -142,10 +143,10 @@ const search = (function (messages, elements) {
       if (response.status === STATUS.notFound) {
         messages.blinkMessage('User not found')
       } else {
-        const msg = (response.statusText && response.statusText.length > 0) ? response.statusText : 'Error occured'
+        const msg = (response.statusText && response.statusText.length > 0) ? response.statusText : 'Error occurred'
         messages.blinkMessage(msg)
+        throw new Error(msg)
       }
-      throw new Error(response.statusText)
     },
     makeRequest (url) {
       const options = this.getOptions()
@@ -163,7 +164,8 @@ const search = (function (messages, elements) {
       event.preventDefault()
       event.stopPropagation()
       return _p.getUserRepos(username)
-    }
+    },
+    _p //dirty hack for tests
   }
 }(messages, elements))
 

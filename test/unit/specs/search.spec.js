@@ -4,45 +4,104 @@ const jsdom = require('jsdom-global')()
 document.write(html)
 const config = require('../../../js/index').config
 const dom = require('../../../js/index').dom
+const elements = require('../../../js/index').elements
+const messages = require('../../../js/index').messages
 const sinon = require('sinon')
 // const getElsStub = sinon.stub(document.body, 'getElementById')
 
-const list = require('../../../js/index').list
+const search = require('../../../js/index').search
 import {expect} from "chai";
 
-describe('list:', () => {
+describe('search:', () => {
 
-  it('can display data', () => {
-    const data = [
-      {name: 'aaa'},
-      {name: 'bbb'},
-      {name: 'ccc'}
-    ]
+  describe('getUserRepos.', () => {
 
-    const expectedHtml =
-      `<li class="${config.listItemClass}">${data[0].name}</li>` +
-      `<li class="${config.listItemClass}">${data[1].name}</li>` +
-      `<li class="${config.listItemClass}">${data[2].name}</li>`
+    it('can get user repos', () => {
+      const username = 'randome123'
+      const getExpectedUrl = (userName) => `https://api.github.com/users/${userName}/repos`
+      const url = getExpectedUrl(username)
+      const mock = sinon.mock(search._p)
+      mock.expects('makeRequest').withExactArgs(url).once()
 
-    const setHtmlMock = sinon.mock(dom).expects('setHTML').withArgs(sinon.match.any, expectedHtml).once()
+      search._p.getUserRepos(username)
 
-    const result = list.displayData(data)
+      mock.verify()
+      mock.restore()
+    })
 
-    expect(result).to.equal(expectedHtml)
-    setHtmlMock.verify()
+    it('should throw error when no username', () => {
+      const data = null
+      expect(() => search._p.getUserRepos(data)).to.throw('getUserRepos: no username')
+    })
+
   })
 
+  describe('getOptions', () => {
 
-  it('can clear data', () => {
-    const data = null
-    expect(() => list.displayData(data)).to.throw('displayData: No data')
+    it('can set cors param to true', () => {
+      const expectedResult = {
+        method: 'GET',
+        mode: 'cors'
+      }
+
+      const mock = sinon.mock(elements)
+      mock.expects('getCorsCheckbox').returns({checked: true})
+      const result = search._p.getOptions()
+
+      expect(result).to.deep.equal(expectedResult)
+
+      mock.verify()
+      mock.restore()
+    })
+
+    it('can set cors param to false', () => {
+      const expectedResult = {
+        method: 'GET',
+        mode: 'no-cors'
+      }
+
+      const mock = sinon.mock(elements)
+      mock.expects('getCorsCheckbox').returns({checked: false})
+      const result = search._p.getOptions()
+
+      expect(result).to.deep.equal(expectedResult)
+
+      mock.verify()
+      mock.restore()
+    })
   })
 
+  describe('onError', () => {
+    it('show not found error', () => {
+      const response = {
+        status: 404
+      }
 
-  it('can display data', () => {
-    const clearHtmlMock = sinon.mock(dom).expects('clearHTML').once()
-    list.clearData()
-    clearHtmlMock.verify()
+      const mock = sinon.mock(messages)
+      mock.expects('blinkMessage').withExactArgs('User not found').once()
+
+      const result = search._p.onError(response)
+
+      mock.verify()
+      mock.restore()
+    })
+
+    it('show common found error', () => {
+      const response = {
+        status: 500
+      }
+
+      const expectedMsg = 'Error occurred'
+
+      const mock = sinon.mock(messages)
+      mock.expects('blinkMessage').withExactArgs(expectedMsg).once()
+
+      // const result = search._p.onError(response)
+      expect(() => search._p.onError(response)).to.throw(expectedMsg)
+
+      mock.verify()
+      mock.restore()
+
+    })
   })
-
 })
