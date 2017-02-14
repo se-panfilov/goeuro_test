@@ -137,19 +137,20 @@ const search = (function (messages, elements) {
         mode: isCors ? 'cors' : 'no-cors'
       }
     },
+    onError(response) {
+      if (response.status === STATUS.notFound) {
+        messages.blinkMessage('User not found')
+      } else {
+        const msg = (response.statusText && response.statusText.length > 0) ? response.statusText : 'Error occured'
+        messages.blinkMessage(msg)
+      }
+      throw new Error(response.statusText)
+    },
     makeRequest (url) {
       const options = this.getOptions()
 
       return fetch(url, options).then(response => {
-        if (!response.ok) {
-          if (response.status === STATUS.notFound) {
-            messages.blinkMessage('User not found')
-          } else {
-            const msg = (response.statusText && response.statusText.length > 0) ? response.statusText : 'Error occured'
-            messages.blinkMessage(msg)
-          }
-          throw new Error(response.statusText)
-        }
+        if (!response.ok) return this.onError(response)
 
         return response.json()
       })
