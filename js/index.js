@@ -12,7 +12,7 @@ const dom = (function () {
   'use strict'
 
   return {
-    getElement(id){
+    getElement (id) {
       if (!id) return new Error('getElement: no ID')
       return document.getElementById(id)
     },
@@ -68,7 +68,7 @@ const elements = (function (config, dom) {
     },
     getInput () {
       return this._getElem(config.inputId)
-    },
+    }
   }
 }(config, dom))
 
@@ -141,7 +141,7 @@ const search = (function (messages, elements) {
         mode: isCors ? 'cors' : 'no-cors'
       }
     },
-    onError(response) {
+    onError (response) {
       if (response.status === STATUS.notFound) {
         messages.blinkMessage('User not found')
       } else {
@@ -153,6 +153,7 @@ const search = (function (messages, elements) {
     makeRequest (url) {
       const options = this.getOptions()
 
+      // eslint-disable-next-line no-undef
       return fetch(url, options).then(response => {
         if (!response.ok) return this.onError(response)
 
@@ -169,7 +170,7 @@ const search = (function (messages, elements) {
       event.stopPropagation()
       return _p.getUserRepos(username)
     },
-    _p //dirty hack for tests
+    _p // dirty hack for tests
   }
 }(messages, elements))
 
@@ -202,7 +203,7 @@ const main = (function (search, list, messages, dom, elements) {
   }
 }(search, list, messages, dom, elements))
 
-//for testing purpose
+// for testing purpose
 if (typeof module === 'object' && module.exports) {
   module.exports = {
     dom,

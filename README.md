@@ -37,7 +37,7 @@ npm test
 run e2e tests
 
 ```bash
-npm e2e
+npm run e2e
 ```
 
 ### test description
