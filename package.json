@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "test": "NODE_ENV=test mocha --compilers js:babel-register --recursive",
-    "e2e": "node test/e2e/runner.js",
+    "e2e": "NODE_ENV=test node test/e2e/runner.js",
     "lint": "eslint js --ext .js"
   },
   "devDependencies": {
@@ -28,6 +28,7 @@
     "live-server": "^1.2.0",
     "mocha": "^3.2.0",
     "nightwatch": "^0.9.12",
+    "nock": "^9.0.6",
     "selenium-server": "2.53.1",
     "sinon": "^1.17.7"
   },
