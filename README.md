@@ -4,30 +4,41 @@ Online demo: https://se-panfilov.github.io/goeuro_test/
 
 # Getting started
 
+Just open `index.html` in modern browser (better in chrome).
+
+
+I've use cutting edge es6 features without babel, 
+so it's probably won't work in some browsers, but has to at least at latest chrome.
+
 ## Requirements
+
+Modern browser.
+
+
+## Testing
+
+Pre-Requirements:
 
 1. [Node.js][1] (Better if it would be [version 7.2.x][2])
 2. Npm or [yarn][3] (I use yarn, but npm is also good)
 
-Better to launch it on linux or mac os.
-
-##Install dependencies with
+Install dependencies with
 
 ```bash
 npm install
 ```
 
-# Usage
-
-
-## Testing
-
-To run tests
+run unit tests
 
 ```bash
 npm test
 ```
 
+run e2e tests
+
+```bash
+npm e2e
+```
 
 ### test description
 
